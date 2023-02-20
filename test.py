@@ -6,9 +6,9 @@ st.header("""
 test
 """)
 
-path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
+path = r'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2FAlex-Kout%2FBook_market_analysis%2Fmain%2Fpublisher.xlsx&wdOrigin=BROWSELINKv'
 
-data = pd.read_csv(path, sep=";")
+data = pd.read_excel(path)
 
 st.sidebar.header('Please select if you would like to see an overview of all the major companies in the market or just for a specific company: ')
 user_input = st.sidebar.radio('', ('Whole Market', 'Specific Company'))
