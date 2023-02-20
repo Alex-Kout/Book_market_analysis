@@ -3,11 +3,14 @@ import pandas as pd
 import plotly.express as px
 from pandas import ExcelWriter
 from pandas import ExcelFile
+
 st.header("""
 test
 """)
 
+path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
 
-data = pd.read_excel('publisher.xlsx')
+
+data = pd.read_excel(path)
 st.dataframe(data)
 
