@@ -1,7 +1,7 @@
 import streamlit as st
 
 
-st.markdown("""
+st.header("""
 test
 """)
 
