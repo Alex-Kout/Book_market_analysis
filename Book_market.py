@@ -8,12 +8,7 @@ Created on Wed Feb 15 19:25:12 2023
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import plotly.figure_factory as ff
-import datetime
-import seaborn as sns
 import matplotlib.pyplot as plt
-import plotly.graph_objects as go
-from PIL import Image
 
 ## Import and prepare the data----------------
 path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
