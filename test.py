@@ -8,6 +8,6 @@ test
 
 path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
 
-data = pd.read_csv(path)
+data = pd.read_csv(path, sep = ';')
 st.dataframe(data)
 
