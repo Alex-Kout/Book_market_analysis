@@ -8,7 +8,7 @@ st.header("""
 test
 """)
 
-path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
+path = 'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
 
 
 data = pd.read_excel(path)
