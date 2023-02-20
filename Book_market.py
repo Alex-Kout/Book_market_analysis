@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 from PIL import Image
 
 ## Import and prepare the data----------------
-path = r'C:\Users\akout\OneDrive\Υπολογιστής\publisher.xlsx'
+path = 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2FAlex-Kout%2FBook_market_analysis%2Fmain%2Fpublisher.xlsx&wdOrigin=BROWSELINK'
 
 
 # Function to get the unique values to filter   
