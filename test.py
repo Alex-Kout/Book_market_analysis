@@ -6,7 +6,8 @@ st.header("""
 test
 """)
 
-path = r'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2FAlex-Kout%2FBook_market_analysis%2Fmain%2Fpublisher.xlsx&wdOrigin=BROWSELINKv'
+path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
 
 data = pd.read_csv(path)
+st.dataframe(data
 
