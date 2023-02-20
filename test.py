@@ -13,3 +13,5 @@ path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/p
 data = pd.read_excel(path)
 
 st.dataframe(data.head())
+
+st.line_chart(data.Revenue)
