@@ -11,4 +11,3 @@ path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/p
 data = pd.read_csv(path, sep = ';')
 st.dataframe(data)
 
-data.to_excel("test.xlsx", sheet_name="test", index=False)
