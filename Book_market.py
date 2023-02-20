@@ -10,6 +10,8 @@ import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
 
+
+
 ## Import and prepare the data----------------
 path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
 
