@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-
+import openpyxl
 
 path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
 
