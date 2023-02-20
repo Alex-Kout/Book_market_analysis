@@ -10,6 +10,10 @@ path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/p
 
 data = pd.read_csv(path, sep=";")
 
+st.sidebar.header('Please select if you would like to see an overview of all the major companies in the market or just for a specific company: ')
+user_input = st.sidebar.radio('', ('Whole Market', 'Specific Company'))
+st.sidebar.write('---')
+
 if user_input == 'Whole Market':
 
     df = data.groupby('Year', as_index = False).mean()
