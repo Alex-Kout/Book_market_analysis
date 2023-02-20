@@ -6,8 +6,7 @@ st.header("""
 test
 """)
 
-path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
 
-data = pd.read_csv(path, sep = ';')
+data = pd.read_excel('publisher.xlsx')
 st.dataframe(data)
 
