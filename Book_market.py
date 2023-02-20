@@ -16,15 +16,14 @@ import plotly.graph_objects as go
 from PIL import Image
 
 ## Import and prepare the data----------------
-path = 'https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2FAlex-Kout%2FBook_market_analysis%2Fmain%2Fpublisher.xlsx&wdOrigin=BROWSELINK'
-
+path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.csv'
 
 # Function to get the unique values to filter   
 
 ###-----------------SIdeBar--------------------------------
 st.set_page_config(layout='wide')
 
-data = pd.read_excel(path)
+data = pd.read_csv(path, sep=";")
 
 st.sidebar.header('Select a Company')
 selected_company = st.sidebar.selectbox('', data.Company.unique())
