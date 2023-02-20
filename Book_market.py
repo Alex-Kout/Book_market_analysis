@@ -31,8 +31,6 @@ selected_company = st.sidebar.selectbox('', data.Company.unique())
 
 df = data[data['Company'] == selected_company]
 
-image = Image.open(r"C:\Users\akout\OneDrive\Υπολογιστής\e.jpg")
-st.image(image)
 
 st.header('Εταιρία: ' + selected_company)
 st.write('---')
