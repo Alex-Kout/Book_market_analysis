@@ -3,10 +3,6 @@ import pandas as pd
 import plotly.express as px
 
 
-st.header("""
-test
-""")
-
 path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
 
 # Function to get the unique values to filter   
@@ -15,5 +11,5 @@ path = r'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/p
 
 
 data = pd.read_excel(path)
-st.dataframe(data)
 
+st.dataframe(data.head())
