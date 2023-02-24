@@ -1,0 +1,34 @@
+
+
+def weightening_data(col, year):
+  ''' Calculates the weighted average of the given column and year'''
+  
+  # filter the data by given year
+  df = data[data['Year'] == year]
+  
+  # exclude Nan values
+  revenue = df[col].tolist()
+  revenue = [rev for rev in revenue if not math.isnan(rev)]
+  
+  # calculate the weights based on total revenue
+  weight = [rev/sum(revenue) for rev in revenue]
+  
+  # calculate the weighted average revenue
+  weigthed_avg = sum([rev * wei for rev, wei in zip(revenue, weight)])
+  
+  return round(weigthed_avg, 2)
+
+
+# create a new dataframe with the weighted data
+new_df= pd.DataFrame(columns=data.columns[3:10])
+
+for col in data.columns[3:10]:
+    col_data = []
+    for year in data.Year.dropna().unique():
+        col_data.append(weightening_data(col, year))
+    new_df[col] = col_data
+
+print(new_df)  
+
+
+να θυμηθω να σβησω τις φορμουλες και να τις περασω σε κωδικα
