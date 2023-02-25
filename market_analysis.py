@@ -35,7 +35,9 @@ def income_statement_plot():
     m2.metric(label = 'Average Cost of Goods Sold', value = str(round(df['COGS_%'].mean(), 1)) + ' %')
     m3.metric(label = 'Average EBIT', value = str(round(df['EBIT'].mean()))+ ' €')
     m4.metric(label = 'Average Net Profit', value = str(round(df['Net Income'].mean())) + ' €')
-        
+    
+    st.write('#')
+    
     g1, g2 = st.columns((1, 1,))
     
     height = 400
@@ -50,6 +52,8 @@ def income_statement_plot():
     fig2.update_layout(title_text = 'Cost of Goods Sold (as % of Revenue)', yaxis_title = None)
     fig2.update_traces(line_color='#874528')
     g2.plotly_chart(fig2)
+    
+    st.write('#')
     
     g3, g4 = st.columns((1, 1))
     
@@ -74,7 +78,7 @@ def financial_ratios():
     
     # ----------------Profitability ratios--------------
     
-    st.write("---")
+    st.write("#")
     
     if selected_ratios == 'Profitability ratios':
         gross_margin = df['Gross Profit'] / df.Revenue * 100
@@ -125,6 +129,8 @@ def financial_ratios():
         m4.metric(label = 'Return on Assets (average)', value = str(round(return_on_assets.mean(), 1)) + ' %')
         m5.metric(label = 'Return on Equity (average)', value = str(round(return_on_equity.mean(), 1)) + ' %')
         m6.metric(label = 'Return on Capital Employed (average)', value = str(round(return_on_capital_employed.mean(), 1)) + ' %')
+        
+        st.write('#')
         
         g4, g5, g6 = st.columns((1, 1, 1))
         
@@ -179,6 +185,7 @@ def financial_ratios():
         m1.metric(label = 'Asset Turnover (average)', value = str(round(asset_turnover.mean(), 1)) + ' %')
         m3.metric(label = 'Cash Conversion cycle (average)', value = str(round(cash_conv_cycle.mean())) + ' days')
     
+        st.write('#')
         
         m4, m5, m6 = st.columns((1, 1, 1))
         
@@ -197,6 +204,7 @@ def financial_ratios():
         debt_to_equity = df['Total Debt'] / df["Total Equity"] * 100
         debt_to_capital = (df['Total Debt'] / (df['Total Debt'] + df["Total Equity"])) * 100
         debt_to_ebitda = df['Total Debt'] / df['EBIT'] * 100
+        
         
         m1, m2, m3, m4 = st.columns((1, 1, 1, 1))
     
@@ -260,6 +268,8 @@ def financial_ratios():
         m2.metric(label = 'Quick Ratio (average)', value = str(round(quick_ratio.mean(), 2)) + 'x')
         m3.metric(label = 'Cash Ratio (average)', value = str(round(cash_ratio.mean(), 2)) + 'x')
         
+        st.write('#')
+        
         years = df['Year']
         df_ratios_series = {'Year': years, 'Current Ratio': current_ratio, 'Quick Ratio': quick_ratio, 'Cash Ratio': cash_ratio}
         df_ratios = pd.concat(df_ratios_series, axis = 1)
@@ -283,8 +293,10 @@ def financial_ratios():
         fig3.update_traces(line_color='#204967')
         g3.plotly_chart(fig3) 
         
-    
-        st.write('Current Assets Breakdown')
+        st.write('#')
+        
+        st.subheader('Current Assets Breakdown')
+
         current_assets = df[['Year', 'Cash', 'Inventories', 'Receivables']]
         st.bar_chart(current_assets, x = 'Year', y = ['Cash', 'Inventories', 'Receivables'])
 
@@ -313,13 +325,30 @@ if user_input == 'Market Overview (yearly averages)':
                  including Fiction, Mystery, Action & Adventure, Romance, Historical, Biographies, Children’s Book etc. \
                      All the information are publicly available and can be found in the Publisher's websites. \
                          This presentation is for educational and infromational purposes only and any other use is not permitted.")
-    
-    st.write('---')
+
 
     st.write('In this section all the data are being displayed as the yearly average of all the Companies that are included in this research')
     
     st.write('---')
     
+    st.header('Market Averages per Year')
+    st.write('---')
+    g1, g2 = st.columns((1,1))
+    df_revenue = data.groupby('Company', as_index = False).mean()
+
+    height = 400
+    width = 700
+    
+    fig1 = px.scatter(df_revenue, x = 'Revenue', y = 'Net Income', size = 'Revenue', color = 'Company', height = height, width = width)
+    fig1.update_layout(title_text = 'Map of Revenue and Net Profit', xaxis_title = 'Average Revenue', yaxis_title = 'Average Net Profit')
+    g1.plotly_chart(fig1)
+    
+    fig2 = px.box(data, x = 'Net Income', y = 'Company', height = height, width = width)
+    fig2.update_layout(title_text = 'Net Profit (distribution)', xaxis_title = 'Net Profit', yaxis_title = 'Company')
+    fig2.update_traces(orientation='h')
+    g2.plotly_chart(fig2)
+
+    st.write('---')
     
     income_statement_plot()
     financial_ratios()
@@ -336,8 +365,16 @@ elif user_input == 'Specific Company':
     
     income_statement_plot()
     financial_ratios()
-  
     
+    st.write('---')
+    st.subheader('Your Choice')
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        option = st.selectbox('Please select the Account that you want to be displayed', data.columns[3:].unique())
+        fig = px.line(df, x = 'Year', y = option)
+        st.plotly_chart(fig)
 # ------Display a comparison of the selected Companies --------------------------------------------------------------------
 else:
 
