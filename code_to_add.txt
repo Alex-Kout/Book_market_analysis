@@ -31,44 +31,10 @@ for col in data.columns[3:10]:
 print(new_df)  
 
 
-να θυμηθω να σβησω τις φορμουλες και να τις περασω σε κωδικα -------------------------------------------------------
 
 
 
-analysis_type = st.sidebar.selectbox('Select Analysis Type:', ('Overview', 'Revenue and Profit Over Time', 'Expenses by Category', 'Profit Margin Over Time'))
 
-# create a function for each type of analysis
-def overview():
-    st.write(financial_statement.head())
-    st.write(financial_statement.describe())
-
-def revenue_and_profit():
-    fig = px.line(financial_statement, x='Year', y=['Revenue', 'Profit'], title='Revenue and Profit Over Time')
-    st.plotly_chart(fig)
-
-def expenses_by_category():
-    expense_categories = ['Salary', 'Rent', 'Marketing', 'Insurance', 'Utilities']
-    expense_data = financial_statement[expense_categories]
-    fig = px.bar(expense_data, x='Year', y=expense_categories, barmode='stack', title='Expenses by Category')
-    st.plotly_chart(fig)
-
-def profit_margin():
-    financial_statement['Profit_Margin'] = financial_statement['Profit'] / financial_statement['Revenue']
-    fig = px.line(financial_statement, x='Year', y='Profit_Margin', title='Profit Margin Over Time')
-    st.plotly_chart(fig)
-
-# call the appropriate function based on the analysis type selected
-if analysis_type == 'Overview':
-    overview()
-elif analysis_type == 'Revenue and Profit Over Time':
-    revenue_and_profit()
-elif analysis_type == 'Expenses by Category':
-    expenses_by_category()
-elif analysis_type == 'Profit Margin Over Time':
-    profit_margin()
-This code assumes that the financial statement data is in a CSV file named 'financial_statement.csv' and that the columns are labeled 'Year', 'Revenue', 'Profit', 'Salary', 'Rent', 'Marketing', 'Insurance', and 'Utilities'. You may need to adjust the code accordingly to match the format of your financial statement data.
-
-When you run this code in Streamlit, it will create a dropdown menu in the sidebar allowing you to select the type of analysis you want to perform. Depending on your selection, the code will create an interactive Plotly Express visualization and display it in the Streamlit app.
 
 
 
