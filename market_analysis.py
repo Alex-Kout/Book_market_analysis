@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Feb 20 16:27:46 2023
-
 @author: akout
 """
 
