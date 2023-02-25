@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 20 16:27:46 2023
+
+@author: akout
+"""
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import openpyxl
 
 
 ## Import and prepare the data----------------
@@ -25,8 +31,9 @@ def income_statement_plot():
     fig1.update_layout(title_text = 'Revenues', yaxis_title = None)
     g1.plotly_chart(fig1)
     
-    fig2 = px.line(df, x = 'Year', y = 'Cost of Goods Sold', height = height, width = width)
-    fig2.update_layout(title_text = 'Cost of Goods Sold', yaxis_title = None)
+    df['COGS_%'] = (df['Cost of Goods Sold'] / df['Revenue']) * 100
+    fig2 = px.line(df, x = 'Year', y = 'COGS_%', height = height, width = width)
+    fig2.update_layout(title_text = 'Cost of Goods Sold (as % of Revenue)', yaxis_title = None)
     fig2.update_traces(line_color='#874528')
     g2.plotly_chart(fig2)
     
@@ -62,7 +69,6 @@ def financial_ratios():
         return_on_assets = df['Net Income'] / df['Total Assets'] * 100
         return_on_equity = df['Net Income'] / df["Total Equity"] * 100
         return_on_capital_employed = df['EBIT'] / df['Capital Employed'] * 100
-        
         
         years = df['Year']
         df_ratios_series = {'Year': years, 'Gross margin': gross_margin, 'Operating margin': operating_margin, 'Net Profit margin': net_profit_margin,
@@ -191,26 +197,26 @@ def financial_ratios():
         df_ratios_series = {'Year': years, 'Debt to Assets': debt_to_assets, 'Debt to Equity': debt_to_equity, 'Debt to Capital': debt_to_capital,
                             'Debt to EBITDA': debt_to_ebitda}
         df_ratios = pd.concat(df_ratios_series, axis = 1)
-        height = 350 
-        width = 350
         
-        g1, g2, g3, g4 = st.columns((1, 1, 1, 1))
+        g1, g2 = st.columns((1, 1))
     
-        fig1 = px.line(df_ratios, x = 'Year', y = 'Debt to Assets', height = height, width = width)
+        fig1 = px.line(df_ratios, x = 'Year', y = 'Debt to Assets')
         fig1.update_layout(title_text = 'Debt to Assets (%)', yaxis_title = None )
         g1.plotly_chart(fig1)
         
-        fig2 = px.bar(df_ratios, x = 'Year', y = 'Debt to Equity', height = height, width = width)
+        fig2 = px.bar(df_ratios, x = 'Year', y = 'Debt to Equity')
         fig2.update_layout(title_text = 'Debt to Equity (%)', yaxis_title = None )
         fig2.update_traces(marker_color='#614259')
         g2.plotly_chart(fig2)
     
-        fig3 = px.line(df_ratios, x = 'Year', y = 'Debt to Capital', height = height, width = width)
+        g3, g4 = st.columns((1, 1))
+        
+        fig3 = px.line(df_ratios, x = 'Year', y = 'Debt to Capital')
         fig3.update_layout(title_text = 'Debt to Capital (%)', yaxis_title = None )
         fig3.update_traces(line_color='#871693')
         g3.plotly_chart(fig3)
         
-        fig4 = px.bar(df_ratios, x = 'Year', y = 'Debt to EBITDA', height = height, width = width)
+        fig4 = px.bar(df_ratios, x = 'Year', y = 'Debt to EBITDA')
         fig4.update_layout(title_text = 'Debt to EBITDA (%)', yaxis_title = None )
         fig4.update_traces(marker_color='#618459')
         g4.plotly_chart(fig4)  
@@ -267,11 +273,12 @@ def financial_ratios():
 
 
 ### ------------------ User Input (decide whether to see for a company or for all) -------------------------------
-st.sidebar.header('Please select if you would like to see an overview of all the major companies in the market or just for a specific company: ')
-user_input = st.sidebar.radio('', ('Whole Market', 'Specific Company'))
+st.sidebar.header('Please select for which of the following options would you like to see the Financial Data : ')
+user_input = st.sidebar.radio('', ('Whole Market (yearly averages)', 'Specific Company', 'Compare Companies'))
 st.sidebar.write('---')
 
-if user_input == 'Whole Market':
+# ------ Display the avregares of all Companies --------------------------------------------------------------------
+if user_input == 'Whole Market (yearly averages)':
 
     df = data.groupby('Year', as_index = False).mean()
     
@@ -290,12 +297,163 @@ if user_input == 'Whole Market':
     income_statement_plot()
     financial_ratios()
     
-else:
+# ------------ Display only one Company --------------------------------------------------------------------   
+elif user_input == 'Specific Company':
     selected_company = st.sidebar.selectbox('Select a Company', data.Company.unique())
     st.header('Company: ' + selected_company)
     st.write('---')
     
     df = data[data['Company'] == selected_company]
+    
     income_statement_plot()
     financial_ratios()
-   
+  
+    
+# ------Display a comparison of the selected Companies --------------------------------------------------------------------
+else:
+
+    selected_companies = st.sidebar.multiselect('Select Companies to compare', data.Company.unique())
+    st.header('Comparison of the following Companies: ' )
+    for company in selected_companies:
+        st.write(company)
+        
+    df = data[data['Company'].isin(selected_companies)]
+    st.write('---')
+    st.subheader('Income Statement')
+    g1, g2 = st.columns((1, 1,))
+        
+    height = 400
+    width = 500
+        
+    fig1 = px.line(df, x = 'Year', y = 'Revenue', color = 'Company', height = height, width = width)
+    fig1.update_layout(title_text = 'Revenues', yaxis_title = None)
+    g1.plotly_chart(fig1)
+    
+    df['COGS_%'] = (df['Cost of Goods Sold'] / df['Revenue']) * 100
+    fig2 = px.line(df, x = 'Year', y = 'COGS_%', color = 'Company', height = height, width = width)
+    fig2.update_layout(title_text = 'Cost of Goods Sold (as % of Revenue)', yaxis_title = None)
+    g2.plotly_chart(fig2)
+        
+    g3, g4 = st.columns((1, 1))
+        
+    fig3 = px.bar(df, x = 'Year', y = 'EBIT', color = 'Company', height = height, width = width)
+    fig3.update_layout(title_text = 'Earning before Interest and Taxes', yaxis_title = None)
+    g3.plotly_chart(fig3)
+        
+    fig4 = px.bar(df, x = 'Year', y = 'Net Income', color = 'Company', height = height, width = width)
+    fig4.update_layout(title_text = 'Net Profit', yaxis_title = None)
+    g4.plotly_chart(fig4)
+    
+    st.write('---')
+    st.header('Financial Ratio Analysis')
+    
+    ratios = ['Profitability ratios', 'Leverage ratios', 'Liquidity ratios']
+    selected_ratios = st.radio('Choose a type', ratios)
+
+
+    if selected_ratios == 'Profitability ratios':
+        df['Gross margin'] = df['Gross Profit'] / df.Revenue * 100
+        df['Operating margin'] = df['EBIT'] / df.Revenue * 100
+        df['Net Profit margin'] = df['Net Income'] / df.Revenue * 100
+        df['Return on Assets'] = df['Net Income'] / df['Total Assets'] * 100
+        df['Return on Equity'] = df['Net Income'] / df["Total Equity"] * 100
+        df['Return on Capital Employed'] = df['EBIT'] / df['Capital Employed'] * 100
+        
+     
+        # Ratios per year plot----
+        st.write('#')
+    
+        g1, g2, g3 = st.columns((1, 1, 1))
+    
+        height = 350
+        width = 450
+    
+        fig1 = px.line(df, x = 'Year', y = 'Gross margin', orientation = 'h', color = 'Company', height = height, width = width)
+        fig1.update_layout(title_text = 'Gross margin per year (%)', yaxis_title = None )
+        g1.plotly_chart(fig1)
+    
+        fig2 = px.line(df, x = 'Year', y = 'Operating margin', color = 'Company', height = height, width = width)
+        fig2.update_layout(title_text = 'Operating margin per year (%)', yaxis_title = None )
+        g2.plotly_chart(fig2)
+    
+        fig3 = px.bar(df, x = 'Year', y = 'Net Profit margin', color = 'Company', height = height, width = width)
+        fig3.update_layout(title_text = 'Net Profit margin per year (%)', yaxis_title = None )
+        g3.plotly_chart(fig3)
+        
+        st.write('---')
+        
+        g4, g5, g6 = st.columns((1, 1, 1))
+        
+        fig4 = px.bar(df, x = 'Year', y = 'Return on Assets', color = 'Company', height = height, width = width)
+        fig4.update_layout(title_text = 'Return on Assets (%)', yaxis_title = None )
+        g4.plotly_chart(fig4)
+        
+        fig5 = px.line(df, x = 'Year', y = 'Return on Equity', color = 'Company', height = height, width = width)
+        fig5.update_layout(title_text = 'Return on Equity (%)', yaxis_title = None )
+        g5.plotly_chart(fig5)
+    
+        fig6 = px.bar(df, x = 'Year', y = 'Return on Capital Employed', color = 'Company', height = height, width = width )
+        fig6.update_layout(title_text = 'Return on Capital Employed (%)', yaxis_title = None )
+        g6.plotly_chart(fig6)
+
+        
+    elif selected_ratios == 'Leverage ratios':
+        df['Debt to Assets'] = df['Total Debt'] / df['Total Assets'] * 100
+        df['Debt to Equity'] = df['Total Debt'] / df["Total Equity"] * 100
+        df['Debt to Capital'] = (df['Total Debt'] / (df['Total Debt'] + df["Total Equity"])) * 100
+        df['Debt to EBIT'] = df['Total Debt'] / df['EBIT'] * 100
+    
+        st.write('#')
+
+        g1, g2 = st.columns((1, 1))
+    
+        fig1 = px.line(df, x = 'Year', y = 'Debt to Assets', color = 'Company')
+        fig1.update_layout(title_text = 'Debt to Assets (%)', yaxis_title = None )
+        g1.plotly_chart(fig1)
+        
+        fig2 = px.bar(df, x = 'Year', y = 'Debt to Equity', color = 'Company')
+        fig2.update_layout(title_text = 'Debt to Equity (%)', yaxis_title = None )
+        g2.plotly_chart(fig2)
+    
+        g3, g4 = st.columns((1, 1))
+    
+        fig3 = px.line(df, x = 'Year', y = 'Debt to Capital', color = 'Company')
+        fig3.update_layout(title_text = 'Debt to Capital (%)', yaxis_title = None )
+        g3.plotly_chart(fig3)
+        
+        fig4 = px.bar(df, x = 'Year', y = 'Debt to EBIT', color = 'Company')
+        fig4.update_layout(title_text = 'Debt to EBIT (%)', yaxis_title = None )
+        g4.plotly_chart(fig4)
+    
+    else:
+        df['Current Ratio'] = df['Current Assets'] / df['Current Liabilities'] 
+        df['Quick Ratio'] = (df['Current Assets'] - df['Inventories']) / df["Current Liabilities"]
+        df['Cash Ratio'] = df['Cash'] / df['Current Liabilities']
+        
+        tab1, tab2, tab3 = st.tabs(["Current Ratio", "Quick Ratio", "Cash Ratio"])       
+    
+        with tab1:
+            st.write('Measures a company’s ability to pay current or short-term liabilities (debts and payables) with its current or short-term assets, such as cash, inventory, and receivables.')
+        with tab2:
+            st.write('Measures a company’s ability to pay current or short-term liabilities with its most liquid current assets, excluding the Inventory.')
+        with tab3:
+            st.write('Indicates a company’s capacity to pay off short-term debt obligations with its cash and cash equivalents.')
+        
+        st.write('#')
+
+        height = 380 
+        width = 430
+        
+        g1, g2, g3= st.columns((1, 1, 1))
+    
+        fig1 = px.line(df, x = 'Year', y = 'Current Ratio', color = 'Company', height = height, width = width)
+        fig1.update_layout(title_text = 'Current Ratio', yaxis_title = None )
+        g1.plotly_chart(fig1)
+        
+        fig2 = px.bar(df, x = 'Year', y = 'Quick Ratio',color = 'Company', height = height, width = width)
+        fig2.update_layout(title_text = 'Quick Ratio', yaxis_title = None )
+        g2.plotly_chart(fig2)
+    
+        fig3 = px.line(df, x = 'Year', y = 'Cash Ratio', color = 'Company', height = height, width = width)
+        fig3.update_layout(title_text = 'Cash Ratio', yaxis_title = None )
+        g3.plotly_chart(fig3)
