@@ -40,7 +40,7 @@ def income_statement_plot():
     
     g1, g2 = st.columns((1, 1,))
     
-    height = 400
+    height = 350
     width = 500
     
     fig1 = px.line(df, x = 'Year', y = 'Revenue', height = height, width = width)
@@ -331,7 +331,7 @@ if user_input == 'Market Overview (yearly averages)':
     
     st.write('---')
     
-    st.header('Market Averages per Year')
+    st.subheader('Market Averages per Year')
     st.write('---')
     g1, g2 = st.columns((1,1))
     df_revenue = data.groupby('Company', as_index = False).mean()
@@ -347,7 +347,7 @@ if user_input == 'Market Overview (yearly averages)':
     fig2.update_layout(title_text = 'Net Profit (distribution)', xaxis_title = 'Net Profit', yaxis_title = 'Company')
     fig2.update_traces(orientation='h')
     g2.plotly_chart(fig2)
-
+     
     st.write('---')
     
     income_statement_plot()
@@ -495,6 +495,8 @@ else:
         g4.plotly_chart(fig4)
     
     else:
+    
+        
         df['Current Ratio'] = df['Current Assets'] / df['Current Liabilities'] 
         df['Quick Ratio'] = (df['Current Assets'] - df['Inventories']) / df["Current Liabilities"]
         df['Cash Ratio'] = df['Cash'] / df['Current Liabilities']
