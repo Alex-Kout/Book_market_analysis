@@ -340,7 +340,6 @@ def financial_ratios():
 
 
 st.sidebar.header('Financial Performance Analysis of the Publishing Market in Greece (2011 - 2021)')
-st.write('---')
 user_input = st.sidebar.radio('What would you like to see: ', ('Market Overview (yearly averages)', 'Specific Company', 'Compare Companies'))
 st.sidebar.write('---')
 
