@@ -357,7 +357,7 @@ if user_input == 'Market Overview (yearly averages)':
              This research is based only on Publishing companies, with a dominant role in market, having a wide product portfolio,\
                  including Fiction, Mystery, Action & Adventure, Romance, Historical, Biographies, Children’s Book etc. \
                      All the information are publicly available and can be found in the Publisher's websites. \
-                         This presentation is for educational and infromational purposes only and any other use is not permitted.")
+                         This presentation is for educational and informational purposes only and any other use is not permitted.")
 
 
     st.write('In this section all the data are being displayed as the yearly average of all the Companies that are included in this research')
