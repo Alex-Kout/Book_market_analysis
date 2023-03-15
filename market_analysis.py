@@ -339,7 +339,7 @@ def financial_ratios():
 
 
 
-st.sidebar.header('Please select for which of the following options would you like to see the Financial Data : ')
+st.sidebar.header('A Financial Analysis of the Publishing Market in Greece (2011 - 2021: ')
 user_input = st.sidebar.radio('', ('Market Overview (yearly averages)', 'Specific Company', 'Compare Companies'))
 st.sidebar.write('---')
 
