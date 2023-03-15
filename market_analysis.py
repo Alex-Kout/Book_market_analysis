@@ -1,7 +1,3 @@
-"""
-@author: akout
-"""
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -18,7 +14,7 @@ st.set_page_config(layout='wide')
 data = pd.read_excel(path)
 
 def income_statement_plot():
-    st.subheader('Income Statement')
+    st.subheader('Income Statement Analysis')
     
     st.write('#')
     
@@ -28,10 +24,11 @@ def income_statement_plot():
     # Average ratios info----
     m1, m2, m3, m4 = st.columns((1,1,1,1))
     
-    m1.metric(label = 'Average yearly growth rate', value = str(round(average_groth_rate.mean(), 1)) + ' %')
-    m2.metric(label = 'Average Cost of Goods Sold', value = str(round(df['COGS_%'].mean(), 1)) + ' %')
+    m1.metric(label = 'Average Revenue growth rate', value = str(round(average_groth_rate.mean(), 1)) + ' %')
+    m2.metric(label = 'Average Cost of Goods Sold (as % of Revenue)', value = str(round(df['COGS_%'].mean(), 1)) + ' %')
     m3.metric(label = 'Average EBIT', value = str(round(df['EBIT'].mean()))+ ' €')
     m4.metric(label = 'Average Net Profit', value = str(round(df['Net Income'].mean())) + ' €')
+
     
     st.write('#')
     
@@ -165,9 +162,9 @@ def financial_ratios():
         
         asset_turnover = df.Revenue / df['Total Assets'].rolling(window = 2).mean() * 100
         days = 365
-        inventory_days = df.Inventories.rolling(window = 2).mean() / (df['Cost of Goods Sold']*-1) * 365
-        receivables_days = df.Receivables.rolling(window = 2).mean() / (df['Revenue']) * 365
-        payables_days = df.Payables.rolling(window = 2).mean() / (df['Cost of Goods Sold']*-1) * 365
+        inventory_days = df.Inventories.rolling(window = 2).mean() / (df['Cost of Goods Sold']*-1) * days
+        receivables_days = df.Receivables.rolling(window = 2).mean() / (df['Revenue']) * days
+        payables_days = df.Payables.rolling(window = 2).mean() / (df['Cost of Goods Sold']*-1) * days
         cash_conv_cycle = inventory_days + receivables_days - payables_days
         years = df['Year'].astype(int)
         
@@ -298,6 +295,44 @@ def financial_ratios():
         st.bar_chart(current_assets, x = 'Year', y = ['Cash', 'Inventories', 'Receivables'])
 
 
+    # User Input to see statistical summary of the choosen account ------------------------------------------------
+    st.write('---')
+    
+    st.subheader('In this Section you may choose the Account you would like to be displayed')
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        option = st.selectbox('Please select an Account', data.columns[3:].unique())
+    
+    st.write('---')
+    
+    g1, g2= st.columns((1, 1))    
+    
+    fig1 = px.bar(df, x = 'Year', y = option)
+    fig1.update_layout(title_text = f'{option} per Year', yaxis_title = None)
+    fig1.update_traces(marker_color='#195263')
+    g1.plotly_chart(fig1)
+    
+    
+    yearly_groth_rate = df[option].pct_change() * 100
+    fig2 = px.line(df, x = 'Year', y = yearly_groth_rate)
+    fig2.update_layout(title_text = f'Growth rate of {option} per year (%)', yaxis_title = None)
+    fig2.update_traces(line_color='#966571')
+    g2.plotly_chart(fig2)
+
+
+    g3, g4= st.columns((1, 1)) 
+
+    fig3 = px.ecdf(df, x = option)
+    fig3.update_layout(title_text = f'Empirical Cumulative Distribution Function of {option}', yaxis_title = None)
+    g3.plotly_chart(fig3)
+        
+    fig4 = px.violin(df, x = option, box=True, points='all')
+    fig4.update_layout(title_text = f'{option} Distribution', yaxis_title = None)
+    fig4.update_traces(line_color='#964653')
+    g4.plotly_chart(fig4)
+
 
 
 ### ------------------ User Input (decide whether to see for a company or for all) -------------------------------
@@ -344,7 +379,9 @@ if user_input == 'Market Overview (yearly averages)':
     fig2.update_layout(title_text = 'Net Profit (distribution)', xaxis_title = 'Net Profit', yaxis_title = 'Company')
     fig2.update_traces(orientation='h')
     g2.plotly_chart(fig2)
-     
+    
+
+    
     st.write('---')
     
     income_statement_plot()
@@ -364,14 +401,8 @@ elif user_input == 'Specific Company':
     financial_ratios()
     
     st.write('---')
-    st.subheader('Your Choice')
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        option = st.selectbox('Please select the Account that you want to be displayed', data.columns[3:].unique())
-        fig = px.line(df, x = 'Year', y = option)
-        st.plotly_chart(fig)
+
+        
 # ------Display a comparison of the selected Companies --------------------------------------------------------------------
 else:
 
@@ -492,8 +523,7 @@ else:
         g4.plotly_chart(fig4)
     
     else:
-    
-        
+     
         df['Current Ratio'] = df['Current Assets'] / df['Current Liabilities'] 
         df['Quick Ratio'] = (df['Current Assets'] - df['Inventories']) / df["Current Liabilities"]
         df['Cash Ratio'] = df['Cash'] / df['Current Liabilities']
