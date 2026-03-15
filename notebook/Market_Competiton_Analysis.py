@@ -167,7 +167,7 @@ hr { border-color: #d6cfc3 !important; margin: 1.2rem 0 !important; }
 # ── Data ─────────────────────────────────────────────────────────────────────
 @st.cache_data
 def load_data():
-    path = 'https://raw.githubusercontent.com/Alex-Kout/Book_market_analysis/main/publisher.xlsx'
+    path = '../data/publisher.xlsx'
     return pd.read_excel(path)
 
 data = load_data()
